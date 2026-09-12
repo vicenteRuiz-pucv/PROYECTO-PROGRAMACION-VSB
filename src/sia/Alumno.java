@@ -18,11 +18,11 @@ import sia.excepciones.NotaInvalidaException;
  * mostrar el avance hacia la aprobación y sugerir la nota que falta.
  */
 
-public class Alumno.java {
+public class Alumno {
     
     //CONSTANTES
     public static final double NOTA_MINIMA = 1.0;
-    public static final double NOTA_MINIMA = 7.0;
+    public static final double NOTA_MAXIMA = 7.0;
     public static final double NOTA_APROBACION = 4.0;
 
     //Variables de instancia
@@ -35,14 +35,14 @@ public class Alumno.java {
 
     //LISTA QUE CONTIENE LAS ASIGNATURAS QUE DA EL ALUMNO
     //CON SU CODIGO!
-    private ArrayList<String> codigosAsignaturas;
+    private ArrayList<String> codigosAsignatura;
     
     //MAPA DE NOTAS POR ASIGNATURA!
     //K= CODIGO ASIGNATURA | V= Lista de notas!    
     private HashMap<String,ArrayList<Double>> notasPorAsignatura;
     
     //CONSTRUCTOR
-    Public Alumno(String nombre, String rut, char letra, int curso, String ciclo){
+    public Alumno(String nombre, String rut, char letra, String ciclo, int curso){
         //PODRIAMOS AGREGAR VERIFICACIONES PARA QUE NO INGRESEN DATOS MAL A PROPOSITO?-sugerencia-
         this.nombre = nombre;
         this.rut = rut;
@@ -76,7 +76,7 @@ public class Alumno.java {
         this.curso = curso;
     }
     public int getCurso(){
-        this.curso = curso;
+        return curso;
     }
     public void setCiclo(String ciclo){
         this.ciclo = ciclo;

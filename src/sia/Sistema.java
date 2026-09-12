@@ -31,8 +31,8 @@ public class Sistema {
             cie.agregarRecurso(new RecursoDocumento(10, "Laboratorio Cinemática", "PDF","https://colegio.cl/cie/lab1.pdf", 8, true));
             cie.agregarRecurso(new RecursoVideo(11,"Video Leyes de Newton", "https://colegio.cl/cie/newton.mp4", 20, "720p"));
 
-            Alumno al1 = new Alumno("Benjamin Alucema", "20.123.456-7", 1, 'A', "Media");
-            Alumno al2 = new Alumno("Sofia Contreras", "21.987.654-3", 1, 'A', "Media");
+            Alumno al1 = new Alumno("Benjamin Alucema", "20.123.456-7", 'A', "Media", 1);
+            Alumno al2 = new Alumno("Sofia Contreras", "21.987.654-3", 'A', "Media", 1);
 
             mat.agregarAlumno(al1);
             mat.agregarAlumno(al2);

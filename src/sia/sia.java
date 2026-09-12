@@ -12,13 +12,14 @@ import sia.persistencia.PersistenciaCSV;
  *
  * @author Pc
  */
-public class Sia {
+public class sia {
+ 
     private static Sistema sistema = new Sistema();
     private static Scanner scanner = new Scanner(System.in);
     /**
      * @param args the command line arguments
      */
-    public static void Main(String[] args) {
+    public static void main(String[] args) {
         // SIA-11 (Persistencia, sistema batch): si existen archivos de una
         // ejecución anterior, se cargan ENCIMA de los datos de ejemplo que
         // ya trae el Sistema (ver Sistema.cargarDatosIniciales()). Si es la
@@ -350,7 +351,7 @@ public class Sia {
                         System.out.print("Ciclo: ");
                         String cic = scanner.nextLine().trim();
 
-                        asig.agregarAlumno(new Alumno(nom, rut, cur, let, cic));
+                        asig.agregarAlumno(new Alumno(nom, rut, let, cic, cur));
                         System.out.println("Alumno inscrito en la asignatura.");
                     }
                     break;
