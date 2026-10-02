@@ -1,7 +1,8 @@
 package sia;
 
 import java.util.ArrayList;
-
+import java.util.Collections;
+import java.util.List;
 /**
  * Entidad Profesor que dicta asignaturas en el sistema.
  * 
@@ -47,8 +48,8 @@ public class Profesor {
         this.profesion = profesion;
     }
 
-    public ArrayList<String> getCodigosAsignaturas() {
-        return codigosAsignaturas;
+    public List<String> getCodigosAsignaturas() {
+        return Collections.unmodifiableList(codigosAsignaturas);
     }
 
     // Métodos de gestión de asignaturas asociadas
