@@ -3,6 +3,8 @@ package sia;
 import java.util.ArrayList;
 import java.util.HashMap;
 import sia.excepciones.NotaInvalidaException;
+import java.util.Collections;
+import java.util.List;
 
 /**
  *
@@ -85,8 +87,8 @@ public class Alumno {
         return ciclo;
     }
     
-    public ArrayList<String> getCodigosAsignatura(){
-        return codigosAsignatura;
+    public List<String> getCodigosAsignatura(){
+        return Collections.unmodifiableList(codigosAsignatura);
     }
     public void agregarCodigoAsignatura(String codigo){
         if(!codigosAsignatura.contains(codigo)){
@@ -128,7 +130,11 @@ public class Alumno {
         return true;
     }
     public ArrayList<Double> obtenerNotas(String codigoAsignatura) {
-        return notasPorAsignatura.getOrDefault(codigoAsignatura, new ArrayList<>());
+        ArrayList<Double> notas = notasPorAsignatura.get(codigoAsignatura);
+        if (notas == null){
+            return new ArrayList<>();
+        }
+        return new ArrayList<>(notas);
     }
     public double calcularPromedio(String codigoAsignatura) {
         ArrayList<Double> notas = obtenerNotas(codigoAsignatura);

@@ -1,5 +1,6 @@
 package sia.gui;
 
+import sia.exportacion.ExportadorPlanilla;
 import java.awt.BorderLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
@@ -103,6 +104,17 @@ public class VentanaPrincipal extends JFrame {
             }
         });
         panel.add(btnGuardarSalir);
+        JButton btnExportar = new JButton("Exportar a Excel");
+        btnExportar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                boolean ok = ExportadorPlanilla.exportarBoletin(sistema);
+                JOptionPane.showMessageDialog(VentanaPrincipal.this, ok
+                    ? "Planilla creada en datos_sia/boletin_notas.xlsx"
+                    : "No se pudo crear la planilla.");
+            }
+        });
+        panel.add(btnExportar);
         return panel;
     }
 

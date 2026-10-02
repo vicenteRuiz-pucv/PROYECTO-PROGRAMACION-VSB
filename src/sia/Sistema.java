@@ -8,13 +8,20 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import sia.excepciones.NotaInvalidaException;
 import sia.excepciones.RecursoDuplicadoException;
+import java.util.Collections;
+import java.util.Map;
 
 public class Sistema {
     private HashMap<String,Asignatura> mapaAsignaturas;
-
+    
     public Sistema(){
+        this(true);
+    }
+    public Sistema(boolean cargarEjemplos){
         this.mapaAsignaturas = new HashMap<>();
-        cargarDatosIniciales();
+        if (cargarEjemplos){
+            cargarDatosIniciales();
+        }
     }
     
     private void cargarDatosIniciales(){
@@ -101,8 +108,8 @@ public class Sistema {
         }
         return false;
     }
-     public HashMap<String, Asignatura> getMapaAsignaturas() {
-        return mapaAsignaturas;
+     public Map<String, Asignatura> getMapaAsignaturas() {
+        return Collections.unmodifiableMap(mapaAsignaturas);
     }
     public Alumno buscarAlumnoGlobal(String rut) {
         if (rut == null) return null;

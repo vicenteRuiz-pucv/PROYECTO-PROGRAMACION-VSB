@@ -1,5 +1,5 @@
 package sia;
-
+import sia.exportacion.ExportadorPlanilla;
 import java.util.ArrayList;
 import java.util.Scanner;
 import javax.swing.SwingUtilities;
@@ -14,24 +14,26 @@ import sia.persistencia.PersistenciaCSV;
  */
 public class sia {
  
-    private static Sistema sistema = new Sistema();
+    private static Sistema sistema;
     private static Scanner scanner = new Scanner(System.in);
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // SIA-11 (Persistencia, sistema batch): si existen archivos de una
-        // ejecución anterior, se cargan ENCIMA de los datos de ejemplo que
-        // ya trae el Sistema (ver Sistema.cargarDatosIniciales()). Si es la
-        // primera vez que se ejecuta el programa, todavía no existen esos
-        // archivos y el sistema simplemente sigue funcionando con los
-        // datos de ejemplo (así se sigue cumpliendo SIA-3 igual que antes).
-        if (PersistenciaCSV.existenDatosGuardados()) {
+        // (Persistencia, sistema batch): 
+        // Si hay datos de una sesión anterior, se crea el sistema vacío y se
+        // cargan desde los archivos CSV. Si es la primera ejecución, se usan
+        // los datos de ejemplo que trae el Sistema.
+            
+        boolean hayDatos = PersistenciaCSV.existenDatosGuardados();
+        sistema = hayDatos ? new Sistema(false) : new Sistema();
+        if (hayDatos){
             PersistenciaCSV.cargar(sistema);
-            System.out.println("Datos cargados desde la última sesión guardada.");
+            System.out.println("Datos cargados desde la ultima sesión guardada");
         }
+        
 
-        // SIA-10
+       
         System.out.println("\n=== SIA - Selección de modo de uso ===");
         System.out.println("1. Consola");
         System.out.println("2. Ventana (interfaz gráfica)");
@@ -56,18 +58,19 @@ public class sia {
         int opcion = -1;
         do {
             System.out.println("\n╔═══════════════════════════════════════════════════╗");
-            System.out.println("║   SIA - GESTIÓN DE RECURSOS EDUCATIVOS DIGITALES  ║");
+            System.out.println("║   SIA - GESTIÓN DE RECURSOS EDUCATIVOS DIGITALES   ║");
             System.out.println("╠═══════════════════════════════════════════════════╣");
-            System.out.println("║ 1. Gestión de Asignaturas (Colección 1 - HashMap) ║");
-            System.out.println("║ 2. Gestión de Recursos Digitales (Colección 2)    ║");
-            System.out.println("║ 3. Gestión de Alumnos                             ║");
+            System.out.println("║ 1. Gestión de Asignaturas (Colección 1 - HashMap)  ║");
+            System.out.println("║ 2. Gestión de Recursos Digitales (Colección 2)     ║");
+            System.out.println("║ 3. Gestión de Alumnos                              ║");
             System.out.println("║ 4. Boletín Académico (Funcionalidad estrella SIA-9)║");
             System.out.println("║ 5. Demostración SIA-5 (Sobrecarga) & SIA-6         ║");
-            System.out.println("║ 0. Salir (guarda los datos automáticamente)       ║");
+            System.out.println("║ 6. Exportar boletín a Excel                        ║");
+            System.out.println("║ 0. Salir (guarda los datos automáticamente)        ║");
             System.out.println("╚═══════════════════════════════════════════════════╝");
             System.out.print("Seleccione una opción: ");
 
-            // SIA-12: try-catch
+            // try-catch
             try {
                 opcion = Integer.parseInt(scanner.nextLine().trim());
                 switch (opcion) {
@@ -76,8 +79,15 @@ public class sia {
                     case 3: menuAlumnos(); break;
                     case 4: menuBoletinAcademico(); break;
                     case 5: demoSobrecargaYSobreescritura(); break;
+                    case 6:
+                        if (ExportadorPlanilla.exportarBoletin(sistema)) {
+                            System.out.println("Planilla creada en datos_sia/boletin_notas.xlsx");
+                        } else {
+                            System.out.println("No se pudo crear la planilla.");
+                        }
+                    break;
                     case 0:
-                        // SIA-11: sistema "batch" -> se graban todos los
+                        // sistema "batch" -> se graban todos los
                         // datos en archivos justo antes de salir.
                         PersistenciaCSV.guardar(sistema);
                         System.out.println("Datos guardados. ¡Gracias por utilizar el sistema SIA!");
@@ -92,7 +102,7 @@ public class sia {
     }
 
     // ==========================================================
-    //  SIA-7 / SIA-8: MENÚ DE LA COLECCIÓN 1 (ASIGNATURAS)
+    // MENÚ DE LA COLECCIÓN 1 (ASIGNATURAS)
     // ==========================================================
     private static void menuAsignaturas() {
         System.out.println("\n--- GESTIÓN DE ASIGNATURAS ---");
@@ -107,9 +117,9 @@ public class sia {
             int op = Integer.parseInt(scanner.nextLine().trim());
             switch (op) {
                 case 1:
-                    sistema.mostrarAsignaturas(); // SIA-7: mostrar listado
+                    sistema.mostrarAsignaturas(); // mostrar listado
                     break;
-                case 2: { // SIA-7: inserción manual
+                case 2: { // inserción manual
                     System.out.print("Código (ej. MAT-101): ");
                     String cod = scanner.nextLine().trim();
                     System.out.print("Nombre: ");
@@ -134,7 +144,7 @@ public class sia {
                     System.out.println("Asignatura agregada correctamente.");
                     break;
                 }
-                case 3: { // SIA-8: búsqueda de un elemento
+                case 3: { // búsqueda de un elemento
                     System.out.print("Código a buscar: ");
                     String bCod = scanner.nextLine().trim();
                     Asignatura encontrada = sistema.buscarAsignatura(bCod);
@@ -145,7 +155,7 @@ public class sia {
                     }
                     break;
                 }
-                case 4: { // SIA-8: edición de un elemento
+                case 4: { // edición de un elemento
                     System.out.print("Código de la asignatura a modificar: ");
                     String mCod = scanner.nextLine().trim();
                     if (sistema.buscarAsignatura(mCod) != null) {
@@ -165,7 +175,7 @@ public class sia {
                     }
                     break;
                 }
-                case 5: { // SIA-8: eliminación de un elemento
+                case 5: { // eliminación de un elemento
                     System.out.print("Código de asignatura a eliminar: ");
                     String eCod = scanner.nextLine().trim();
                     if (sistema.eliminarAsignatura(eCod)) {
@@ -186,12 +196,12 @@ public class sia {
     }
 
     // ==========================================================
-    //  SIA-7 / SIA-8: MENÚ DE LA COLECCIÓN 2 (RECURSOS DIGITALES)
+    //  MENÚ DE LA COLECCIÓN 2 (RECURSOS DIGITALES)
     // ==========================================================
     private static void menuRecursos() {
         System.out.print("\nIngrese el código de la asignatura a gestionar: ");
         String cod = scanner.nextLine().trim();
-        Asignatura asig = sistema.buscarAsignatura(cod); // usa el HashMap (SIA-4)
+        Asignatura asig = sistema.buscarAsignatura(cod); // usa el HashMap
         if (asig == null) {
             System.out.println("Asignatura no encontrada.");
             return;
@@ -221,7 +231,6 @@ public class sia {
                     System.out.print("URL: ");
                     String url = scanner.nextLine().trim();
 
-                    // SIA-6
                     RecursoDigital nuevo;
                     if (tipo == 1) {
                         System.out.print("Duración en minutos: ");
@@ -241,7 +250,7 @@ public class sia {
                         nuevo = new RecursoEnlaceWeb(id, tit, url, externo);
                     }
 
-                    // SIA-12
+
                     try {
                         asig.agregarRecurso(nuevo);
                         System.out.println("Recurso agregado exitosamente.");
@@ -377,7 +386,7 @@ public class sia {
     }
 
     // ==========================================================
-    //  SIA-9: MENÚ DE LA FUNCIONALIDAD ESTRELLA (BOLETÍN ACADÉMICO)
+    //  MENÚ DE LA FUNCIONALIDAD ESTRELLA (BOLETÍN ACADÉMICO)
     // ==========================================================
     private static void menuBoletinAcademico() {
         System.out.println("\n--- BOLETÍN ACADÉMICO ---");
@@ -392,7 +401,7 @@ public class sia {
             int op = Integer.parseInt(scanner.nextLine().trim());
 
             if (op == 5) {
-                // SIA-9
+                
                 ArrayList<Alumno> enRiesgo = sistema.listarAlumnosEnRiesgo();
                 if (enRiesgo.isEmpty()) {
                     System.out.println("No hay alumnos en riesgo de reprobar por el momento.");
@@ -421,10 +430,10 @@ public class sia {
             }
 
             switch (op) {
-                case 1: { // SIA-9: inserción de una nota
+                case 1: { // inserción de una nota
                     System.out.print("Nota a registrar (1.0 a 7.0): ");
                     double nota = Double.parseDouble(scanner.nextLine().trim());
-                    // SIA-12: try-catch obligatorio para la excepción propia.
+                    // try-catch obligatorio para la excepción propia.
                     try {
                         alumno.agregarNota(cod.toUpperCase().trim(), nota);
                         System.out.println("Nota registrada correctamente.");
@@ -433,7 +442,7 @@ public class sia {
                     }
                     break;
                 }
-                case 2: { // SIA-9: edición de una nota
+                case 2: { // edición de una nota
                     mostrarNotasConIndice(alumno, cod);
                     System.out.print("Índice de la nota a editar: ");
                     int idx = Integer.parseInt(scanner.nextLine().trim());
@@ -450,7 +459,7 @@ public class sia {
                     }
                     break;
                 }
-                case 3: { // SIA-9: eliminación de una nota
+                case 3: { // eliminación de una nota
                     mostrarNotasConIndice(alumno, cod);
                     System.out.print("Índice de la nota a eliminar: ");
                     int idx = Integer.parseInt(scanner.nextLine().trim());
@@ -484,13 +493,13 @@ public class sia {
     }
 
     /**
-     * SIA-9: genera el un detalle actual del alumno -> promedio, barra de
+     *  genera el un detalle actual del alumno -> promedio, barra de
      * progreso visual y la nota necesaria para aprobar según cuántas
      * evaluaciones le quedan al alumno.
      */
     private static void mostrarBoletin(Alumno alumno, String codigoAsignatura) {
         String cod = codigoAsignatura.toUpperCase().trim();
-        double promedio = alumno.calcularPromedio(cod); // sobrecarga con String (SIA-5)
+        double promedio = alumno.calcularPromedio(cod); // sobrecarga con String
         ArrayList<Double> notas = alumno.obtenerNotas(cod);
 
         System.out.println("\n===== BOLETÍN DE " + alumno.getNombre() + " (" + cod + ") =====");

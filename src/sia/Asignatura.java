@@ -2,6 +2,8 @@ package sia;
 
 import java.util.ArrayList;
 import sia.excepciones.RecursoDuplicadoException;
+import java.util.Collections;
+import java.util.List;
 /**
  *
  * @author Vicho
@@ -29,7 +31,7 @@ public class Asignatura {
         this.curso = curso;
         this.ciclo = ciclo;
         this.docente = docente;
-        // SIA-3: colecciones inicializadas vacías en el constructor.
+        // colecciones inicializadas vacías en el constructor.
         this.listaAlumnos = new ArrayList<>();
         this.listaRecursos = new ArrayList<>();
 
@@ -170,7 +172,7 @@ public class Asignatura {
     }
     //GETTERS Y SETTERS
     public String getCodigo() { return codigo; }
-    public void setCodigo(String codigo) { this.codigo = codigo; }
+    public void setCodigo(String codigo) { this.codigo = codigo.toUpperCase().trim(); }
 
     public String getNombre() { return nombre; }
     public void setNombre(String nombre) { this.nombre = nombre; }
@@ -197,8 +199,8 @@ public class Asignatura {
         }
     }
 
-    public ArrayList<Alumno> getListaAlumnos() { return listaAlumnos; }
-    public ArrayList<RecursoDigital> getListaRecursos() { return listaRecursos; }
+    public List<Alumno> getListaAlumnos() { return Collections.unmodifiableList(listaAlumnos); }
+    public List<RecursoDigital> getListaRecursos() { return Collections.unmodifiableList(listaRecursos); }
 
     // @Override de Object.toString(): define cómo se ve una Asignatura al
     // imprimirla directamente, por ejemplo en Sistema.mostrarAsignaturas().
