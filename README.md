@@ -388,7 +388,3 @@ ERROR StatusLogger Log4j2 could not find a logging implementation. Please add lo
 Con esto el proyecto cubre SIA-3 a SIA-13 completo, más los opcionales SIA-O2 (planilla) y SIA-O3 (Javadoc). No se implementaron SIA-O1 (componente gráfico estadístico) ni SIA-O4 (MVC).
 
 ---
-
-## Decisiones de nivel de código (por qué no hay lambdas ni reflection)
-
-En un momento, dos partes del código usaban herramientas más avanzadas de lo esperado en un curso introductorio: una expresión lambda en `Alumno.agregarNota()` y "reflection" (`Class<? extends RecursoDigital>`) en el filtrado de recursos de `Asignatura`. Ambas se reemplazaron por `if`/`containsKey` e `instanceof` respectivamente — el mismo resultado, pero con herramientas coherentes con el resto del proyecto y fáciles de explicar en una defensa oral. Por la misma razón, todos los `ActionListener` de la ventana Swing se escribieron como clases anónimas y no como lambdas.
