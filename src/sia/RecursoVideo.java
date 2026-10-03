@@ -1,12 +1,21 @@
 package sia;
 
 /**
- * SIA-6 (Herencia): especialización de RecursoDigital para contenido audiovisual
+ * (Herencia): especialización de RecursoDigital para contenido audiovisual
  */
 public class RecursoVideo extends RecursoDigital {
     private int duracionMinutos;
     private String resolucion;
 
+    /**
+     * Crea un video (el formato siempre es "Video MP4").
+     *
+     * @param numeroMaterial ID del recurso
+     * @param titulo título
+     * @param url dirección del video
+     * @param duracionMinutos duración en minutos
+     * @param resolucion resolución (1080p, 720p...)
+     */
     public RecursoVideo(int numeroMaterial, String titulo, String url, int duracionMinutos, String resolucion) {
         // "super(...)" llama al constructor de la clase Padre (RecursoDigital)
         // para que se encargue de guardar numeroMaterial, titulo y url
@@ -15,10 +24,30 @@ public class RecursoVideo extends RecursoDigital {
         this.resolucion = resolucion;
     }
 
+    /**
+     * Obtiene el dato: duración del video en minutos.
+     *
+     * @return duración del video en minutos
+     */
     public int getDuracionMinutos() { return duracionMinutos; }
+    /**
+     * Modifica el dato: duración del video en minutos.
+     *
+     * @param duracionMinutos nuevo valor: duración del video en minutos
+     */
     public void setDuracionMinutos(int duracionMinutos) { this.duracionMinutos = duracionMinutos; }
 
+    /**
+     * Obtiene el dato: resolución del video (por ejemplo 1080p).
+     *
+     * @return resolución del video (por ejemplo 1080p)
+     */
     public String getResolucion() { return resolucion; }
+    /**
+     * Modifica el dato: resolución del video (por ejemplo 1080p).
+     *
+     * @param resolucion nuevo valor: resolución del video (por ejemplo 1080p)
+     */
     public void setResolucion(String resolucion) { this.resolucion = resolucion; }
 
     // SIA-6: Sobreescritura (@Override) -> reemplaza la versión abstracta

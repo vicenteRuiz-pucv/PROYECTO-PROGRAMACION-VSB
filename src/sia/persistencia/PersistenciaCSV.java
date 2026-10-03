@@ -20,14 +20,14 @@ import sia.excepciones.NotaInvalidaException;
 import sia.excepciones.RecursoDuplicadoException;
 
 /**
- * SIA-11: Persistencia de datos mediante archivos de texto (CSV), con
+ *  Persistencia de datos mediante archivos de texto (CSV), con
  * sistema "batch": los datos se cargan una sola vez al iniciar la
  * aplicación (método cargar) y se graban una sola vez al salir (método
  * guardar). No se lee ni se escribe disco constantemente mientras el
  * programa está en uso, solo al principio y al final.
  *
  * ¿Por qué una clase aparte y no meter esta lógica dentro de Sistema?
- * Para mantener el código modularizado (SIA-3): Sistema se encarga de la
+ * Para mantener el código modularizado : Sistema se encarga de la
  * lógica de negocio (asignaturas, alumnos, recursos), y esta clase se
  * encarga exclusivamente de "traducir" esos objetos a texto y de vuelta.
  * Si mañana se quisiera cambiar de CSV a, por ejemplo, una base de datos
@@ -42,7 +42,7 @@ import sia.excepciones.RecursoDuplicadoException;
  *   - inscripciones.csv  -> une asignaturas con alumnos (relación muchos
  *                            a muchos: un alumno puede estar en varios
  *                            cursos, y un curso tiene varios alumnos)
- *   - notas.csv          -> una fila por cada nota registrada (SIA-9)
+ *   - notas.csv          -> una fila por cada nota registrada 
  *
  * NOTA IMPORTANTE: se usa el caracter ";" como separador de columnas.
  * Por simplicidad, esta versión asume que los nombres, títulos y URLs
@@ -51,6 +51,10 @@ import sia.excepciones.RecursoDuplicadoException;
  * formato más robusto, como CSV con comillas o JSON).
  */
 public class PersistenciaCSV {
+
+    private PersistenciaCSV() {
+        // clase de utilidades: solo métodos estáticos, no se instancia
+    }
 
     private static final String CARPETA = "datos_sia";
     private static final String ARCHIVO_ASIGNATURAS = CARPETA + "/asignaturas.csv";
@@ -63,16 +67,23 @@ public class PersistenciaCSV {
     /**
      * Indica si ya existe una sesión guardada anteriormente. Se usa en
      * Main.java para decidir si hay que cargar datos desde archivo o si
-     * el programa debe arrancar solo con los datos de ejemplo (SIA-3).
+     * el programa debe arrancar solo con los datos de ejemplo .
+     *
+     * @return true si existe el archivo de asignaturas de una sesión anterior
      */
     public static boolean existenDatosGuardados() {
         File f = new File(ARCHIVO_ASIGNATURAS);
-        return f.exists() && f.length() > 0;
+        return f.exists();
     }
 
     // ==========================================================
     //  GUARDAR (se ejecuta una sola vez, al salir del programa)
     // ==========================================================
+    /**
+     * Guarda todo el sistema en los archivos CSV (se llama una sola vez, al salir).
+     *
+     * @param sistema sistema cuyos datos se graban
+     */
     public static void guardar(Sistema sistema) {
         // mkdirs() crea la carpeta "datos_sia" si todavía no existe (por
         // ejemplo, la primera vez que se guarda algo).
@@ -102,7 +113,7 @@ public class PersistenciaCSV {
                 wAsig.println(asig.getCodigo() + SEP + asig.getNombre() + SEP + asig.getLetra() + SEP
                         + asig.getCurso() + SEP + asig.getCiclo() + SEP + nomDoc + SEP + rutDoc + SEP + profDoc);
 
-                // SIA-6: aquí se recorre la lista polimórfica de recursos.
+                //  aquí se recorre la lista polimórfica de recursos.
                 // Como cada tipo (Video/Documento/Enlace) guarda columnas
                 // distintas, se usa "instanceof" para saber cuál es cuál
                 // antes de escribir su fila — el mismo patrón que ya se
@@ -136,7 +147,7 @@ public class PersistenciaCSV {
                     // (asignatura, alumno).
                     wIns.println(asig.getCodigo() + SEP + al.getRut());
 
-                    // SIA-9: se guarda cada nota del alumno EN ESA asignatura.
+                    // se guarda cada nota del alumno EN ESA asignatura.
                     for (double nota : al.obtenerNotas(asig.getCodigo())) {
                         wNotas.println(al.getRut() + SEP + asig.getCodigo() + SEP + nota);
                     }
@@ -153,11 +164,16 @@ public class PersistenciaCSV {
     // ==========================================================
     //  CARGAR (se ejecuta una sola vez, al iniciar el programa)
     // ==========================================================
+    /**
+     * Carga todo el sistema desde los archivos CSV (se llama una sola vez, al iniciar).
+     *
+     * @param sistema sistema (vacío) donde se cargan los datos
+     */
     public static void cargar(Sistema sistema) {
         // Mapa auxiliar temporal: mientras se leen los archivos, se
         // necesita poder encontrar rápidamente a un Alumno por su RUT
         // (para inscribirlo en sus asignaturas y cargarle sus notas).
-        // No es una de las colecciones "oficiales" del diseño (SIA-4);
+        // No es una de las colecciones "oficiales" del diseño ;
         // es solo una herramienta de trabajo interna de este método.
         HashMap<String, Alumno> alumnosPorRut = new HashMap<>();
 
@@ -204,7 +220,7 @@ public class PersistenciaCSV {
                 String formato = p[4];
                 String url = p[5];
 
-                // SIA-6: según el texto guardado ("VIDEO", "DOCUMENTO" o
+                // según el texto guardado ("VIDEO", "DOCUMENTO" o
                 // "ENLACE"), se reconstruye el objeto de la subclase
                 // correcta. Es el mismo tipo de decisión que ya se hace
                 // en Main.menuRecursos() al crear un recurso nuevo.
@@ -219,7 +235,7 @@ public class PersistenciaCSV {
                 }
 
                 if (nuevo != null) {
-                    // SIA-12: se reutiliza la misma excepción propia. Si
+                    // : se reutiliza la misma excepción propia. Si
                     // dos filas del archivo tuvieran, por error, el mismo
                     // ID, se avisa en vez de romper la carga completa.
                     try {

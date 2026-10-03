@@ -20,6 +20,10 @@ import sia.Sistema;
  */
 public class ExportadorPlanilla {
 
+    private ExportadorPlanilla() {
+        // clase de utilidades: solo métodos estáticos, no se instancia
+    }
+
     private static final String CARPETA = "datos_sia";
     private static final String ARCHIVO = CARPETA + "/boletin_notas.xlsx";
 

@@ -1,18 +1,36 @@
 package sia;
 
 /**
- * SIA-6 (Herencia): tercera especialización de RecursoDigital, para
+ * (Herencia): tercera especialización de RecursoDigital, para
  * enlaces externos (simuladores, páginas web, plataformas de terceros).
  */
 public class RecursoEnlaceWeb extends RecursoDigital {
     private boolean requiereConexionExterna;
 
+    /**
+     * Crea un enlace web (el formato siempre es "Enlace Web").
+     *
+     * @param numeroMaterial ID del recurso
+     * @param titulo título
+     * @param url dirección del enlace
+     * @param requiereConexionExterna si necesita un sitio externo al colegio
+     */
     public RecursoEnlaceWeb(int numeroMaterial, String titulo, String url, boolean requiereConexionExterna) {
         super(numeroMaterial, titulo, "Enlace Web", url);
         this.requiereConexionExterna = requiereConexionExterna;
     }
 
+    /**
+     * Obtiene el dato: si el enlace requiere un sitio externo al colegio.
+     *
+     * @return si el enlace requiere un sitio externo al colegio
+     */
     public boolean isRequiereConexionExterna() { return requiereConexionExterna; }
+    /**
+     * Modifica el dato: si el enlace requiere un sitio externo al colegio.
+     *
+     * @param requiereConexionExterna nuevo valor: si el enlace requiere un sitio externo al colegio
+     */
     public void setRequiereConexionExterna(boolean requiereConexionExterna) {
         this.requiereConexionExterna = requiereConexionExterna;
     }

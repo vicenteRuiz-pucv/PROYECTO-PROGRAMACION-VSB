@@ -30,7 +30,7 @@ import sia.excepciones.RecursoDuplicadoException;
 import sia.persistencia.PersistenciaCSV;
 
 /**
- * SIA-10 (parte "ventana"): interfaz gráfica construida con Swing.
+ * (parte "ventana"): interfaz gráfica construida con Swing.
  *
  * IMPORTANTE: esta clase NO vuelve a programar la lógica del sistema. Cada
  * botón llama exactamente a los mismos métodos de Sistema, Asignatura y
@@ -50,15 +50,25 @@ import sia.persistencia.PersistenciaCSV;
  */
 public class VentanaPrincipal extends JFrame {
 
+    /** Sistema con los datos que muestra y modifica la ventana. */
     private Sistema sistema;
 
     // Un JTextArea por pestaña, donde se van mostrando los listados y los
     // mensajes de resultado de cada operación (agregar, buscar, etc.).
+    /** Área de texto de la pestaña de asignaturas. */
     private JTextArea areaAsignaturas;
+    /** Área de texto de la pestaña de recursos digitales. */
     private JTextArea areaRecursos;
+    /** Área de texto de la pestaña de alumnos. */
     private JTextArea areaAlumnos;
+    /** Área de texto de la pestaña de boletín académico. */
     private JTextArea areaBoletin;
 
+    /**
+     * Construye la ventana principal con sus pestañas.
+     *
+     * @param sistema sistema con los datos que la ventana muestra y modifica
+     */
     public VentanaPrincipal(Sistema sistema) {
         super("SIA - Gestión de Recursos Educativos Digitales (Modo Ventana)");
         this.sistema = sistema;
@@ -66,7 +76,7 @@ public class VentanaPrincipal extends JFrame {
         setSize(800, 560);
         setLocationRelativeTo(null); // centra la ventana en la pantalla
         // No usamos EXIT_ON_CLOSE directamente porque antes de cerrar
-        // necesitamos guardar los datos (SIA-11). Se maneja a mano más
+        // necesitamos guardar los datos . Se maneja a mano más
         // abajo con un WindowListener.
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
@@ -79,7 +89,7 @@ public class VentanaPrincipal extends JFrame {
         add(pestañas, BorderLayout.CENTER);
         add(crearBarraInferior(), BorderLayout.SOUTH);
 
-        // SIA-11: si el usuario cierra la ventana con la "X", igual se
+        //  si el usuario cierra la ventana con la "X", igual se
         // guardan los datos antes de terminar el programa. Se usa una
         // clase anónima (WindowAdapter) en vez de una lambda, para
         // mantener el mismo estilo del resto del proyecto.
@@ -210,7 +220,10 @@ public class VentanaPrincipal extends JFrame {
 
         Profesor prof = new Profesor(nomDoc, rutDoc, espDoc);
         Asignatura asig = new Asignatura(cod, nom, letraTxt.toUpperCase().charAt(0), curso, ciclo, prof);
-        sistema.agregarAsignatura(asig);
+        if (!sistema.agregarAsignatura(asig)) {
+            JOptionPane.showMessageDialog(this, "Ya existe una asignatura con el código " + asig.getCodigo() + ". No se agregó.");
+            return;
+        }
         actualizarAsignaturas();
         JOptionPane.showMessageDialog(this, "Asignatura agregada correctamente.");
     }

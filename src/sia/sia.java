@@ -9,15 +9,24 @@ import sia.gui.VentanaPrincipal;
 import sia.persistencia.PersistenciaCSV;
 
 /**
+ * Clase principal del programa: pregunta si se usa consola o ventana, carga
+ * los datos al iniciar (CSV) y contiene los menús del modo consola.
  *
  * @author Pc
  */
 public class sia {
+
+    private sia() {
+        // clase de arranque: solo contiene métodos estáticos, no se instancia
+    }
  
     private static Sistema sistema;
     private static Scanner scanner = new Scanner(System.in);
     /**
-     * @param args the command line arguments
+     * Punto de entrada: carga los datos guardados (si existen), pregunta si se
+     * usa consola o ventana y lanza el modo elegido.
+     *
+     * @param args argumentos de línea de comandos (no se usan)
      */
     public static void main(String[] args) {
         // (Persistencia, sistema batch): 
@@ -140,8 +149,11 @@ public class sia {
 
                     Profesor prof = new Profesor(nomDoc, rutDoc, espDoc);
                     Asignatura asig = new Asignatura(cod, nom, letra, cur, ciclo, prof);
-                    sistema.agregarAsignatura(asig);
-                    System.out.println("Asignatura agregada correctamente.");
+                    if (sistema.agregarAsignatura(asig)) {
+                        System.out.println("Asignatura agregada correctamente.");
+                    } else {
+                        System.out.println("Ya existe una asignatura con el código " + asig.getCodigo() + ". No se agregó.");
+                    }
                     break;
                 }
                 case 3: { // búsqueda de un elemento
@@ -550,7 +562,7 @@ public class sia {
     }
 
     // ==========================================================
-    //  SIA-5 y SIA-6: DEMOSTRACIÓN EXPLÍCITA PARA LA DEFENSA DEL PROYECTO
+    //  DEMOSTRACIÓN EXPLÍCITA PARA LA DEFENSA DEL PROYECTO
     // ==========================================================
     private static void demoSobrecargaYSobreescritura() {
         System.out.println("\n=======================================================");
